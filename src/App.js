@@ -1,24 +1,74 @@
-import logo from './logo.svg';
-import './App.css';
+import './style/App.css';
+import {useEffect,useState} from 'react';
+import {BrowserRouter,Route} from 'react-router-dom'
+import Overview from './pages/desktop/Overview'
+import MyWallet from './pages/desktop/MyWallet'
+import Sandbox from './pages/desktop/Sandbox'
+import Pool from './pages/desktop/Pool'
+import NFTStake from './pages/desktop/NFTStake'
+import StakePopup from './component/desktop/popup/StakePopUp'
+import Liquidity from './component/desktop/popup/Liquidity';
 
-function App() {
+import OverviewMb from './pages/mobile/Overview'
+import MyWalletMb from './pages/mobile/MyWallet'
+import NFTStakeMb from './pages/mobile/NFTStake'
+import SandboxMb from './pages/mobile/Sandbox'
+import PoolMb from './pages/mobile/Pool'
+function App(props) {
+  
+  const [isMobile,setIsMobile] = useState(false);
+
+  useEffect(()=>{
+    updateDimensions();
+  },[])
+
+  useEffect(()=>{
+    window.addEventListener("resize",updateDimensions)
+    return function cleanup(){
+      window.removeEventListener("resize",updateDimensions)
+    } 
+  },[isMobile])
+
+  const updateDimensions = ()=>{
+      if(window.innerWidth<940 && !isMobile){
+        setIsMobile(true);
+      }else if(window.innerWidth>=940 && isMobile){
+        setIsMobile(false)
+      }
+  }
+
+
+  const Render=()=>{
+    if(!isMobile){
+      return(
+      <div className="App">  
+        <Route path='/' exact component={Overview}/>
+        <Route path='/My Wallet' exact component={MyWallet} />
+        <Route path='/Sandbox' exact component={Sandbox}/>
+        <Route path='/Pool' exact component={Pool} />
+        <Route path='/NFT Stake' exact component={NFTStake} />
+      </div>)
+    }else{
+      return(
+        <div className="App">  
+          <Route path='/'exact component={OverviewMb} />
+          <Route path='/My Wallet' exact component={MyWalletMb} />
+          <Route path='/Sandbox' exact component={SandboxMb}/>
+          <Route path='/Pool' exact component={PoolMb} />
+          <Route path='/NFT Stake' exact component={NFTStakeMb} />
+        </div>
+      )
+    }
+
+  }
+    
+      
+    
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      {Render()}
+    </BrowserRouter>
   );
 }
 
